@@ -11,7 +11,7 @@ import os
 file_path = os.path.dirname(__file__)
 
 # checkerboard size (MAKE SURE THIS MATCHES YOUR CHECKERBOARD)
-CHECKERBOARD_SIZE = (12, 12)
+CHECKERBOARD_SIZE = (4, 5)
 
 # get all images from the directory where you stored the training frames
 images = glob.glob(file_path + '/../../data/calibration_frames/*.png')

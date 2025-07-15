@@ -1,11 +1,11 @@
 import numpy as np
 
 # input parameters you want to test IN METERS
-distances_apart = [0.5, 1, 1.5, 2] # From each lens
-distances_away = [0.5, 1, 1.5, 2] # From the center line
+distances_apart = [0.5] # From each lens
+distances_away = [1.32 - 0.25,1.32] # From the center line
 
 # Camera parameters IN DEGREES
-horizontal_fov = 122.6	  
+horizontal_fov = 68  
 # vertical_fov = 60    
 
 horizontal_resolution = 1440  # pixels
@@ -38,19 +38,28 @@ import pandas as pd
 df = pd.DataFrame(results[:, :, 0], index=distances_apart, columns=distances_away)
 df.columns.name = 'Distance Away (m)'
 df.index.name = 'Distance Apart (m)'
-print("\nHorizontal Overlap (m):")
-print(df)
+# print("\nHorizontal Overlap (m):")
+# print(df)
 
+# Add first row of resolution data to the dataframe
 df_resolution = pd.DataFrame(results[:, :, 1], index=distances_apart, columns=distances_away)
 df_resolution.columns.name = 'Distance Away (m)'
 df_resolution.index.name = 'Distance Apart (m)'
-print("\nResolution (pixels/cm):")
-print(df_resolution)
-        
-# combine the two dataframes
-combined_df = pd.concat([df, df_resolution.add_suffix(' Resolution (pixels/cm)')], axis=1)
 
-combined_df.to_csv('fov_results.csv', index=True)
+snip = df_resolution.iloc[0,0:].to_frame().T
+snip = snip.rename(index={snip.index[0]: 'resolution (pixels/cm)'})
+
+# print(snip)
+result = pd.concat([df, snip])
+
+result.columns.name = 'Distance Away (m)'
+result.index.name = 'Distance Apart (m)'
+# result = result.rename(index={result.index[4]: 'resolution (pixels/cm)'})
+print(result) 
+
+# # Save the result to a CSV file
+result.to_csv('fov_results.csv', index=True)
+
 
 
 
