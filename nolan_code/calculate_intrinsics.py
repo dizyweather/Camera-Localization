@@ -9,12 +9,12 @@ from pupil_apriltags import Detector
 IMG_DIR           = Path("./Gopro_Narrow/cam1_cal")  # image folder path 
 EXT               = "JPG"          # PNG, JPG, case insensitive
 SAVE_JSON         = True           # Export intrinsics matrix K
-OUT_FILE          = "test.json"    # Output file name
+OUT_FILE          = "./results/cam1_intrinsics.json"    # Output file name
 
 # These are already set to the large calibration board we own
-TAG_SIZE_MM       = 75.0           # tag edge (mm)
-TAG_SPACING_MM    = 40.0           # tag gap (mm)
-GRID_ROWS, GRID_COLS = 4, 5
+TAG_SIZE_MM       = 49.0           # tag edge (mm)
+TAG_SPACING_MM    = 11           # tag gap (mm)
+GRID_ROWS, GRID_COLS = 3, 4
 TAG_ID_OFFSET     = 0
 
 N_THREADS         = 20           # For multi-processing

@@ -1,10 +1,10 @@
 import cv2 as cv
 import cv2.aruco as aruco
 import os
-import pickle
 import numpy as np
 from scipy.spatial.transform import Rotation as R
 import glob
+import json
 
 marker_length = 0.05 # length of aruco marker in meters
 
@@ -12,8 +12,11 @@ marker_length = 0.05 # length of aruco marker in meters
 file_path = os.path.dirname(__file__)
 
 # Getting back the objects:
-with open(file_path + '/../results/camera_matrix.pkl', 'rb') as f:  
-    cam_matrix, dist_coeffs, _, _ = pickle.load(f)
+with open(file_path + '/../../results/cam1_intrinsics.json') as f:  
+    info = json.load(f)
+    
+print(info)
+exit(0)
 
 # defines the aruco marker's object points in the marker's frame
 obj_points = np.array([

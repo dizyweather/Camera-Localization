@@ -11,10 +11,10 @@ import os
 file_path = os.path.dirname(__file__)
 
 # checkerboard size (MAKE SURE THIS MATCHES YOUR CHECKERBOARD)
-CHECKERBOARD_SIZE = (4, 5)
+CHECKERBOARD_SIZE = (11, 7)
 
 # get all images from the directory where you stored the training frames
-images = glob.glob(file_path + '/../../data/calibration_frames/*.png')
+images = glob.glob(file_path + '/../../Gopro_Narrow/cam1_cal/*.jpg')
 
 if images == []:
     print("No images found in the specified directory. Please check the path.")
@@ -49,8 +49,8 @@ for fname in images:
  
         # Draw and display the corners
         cv.drawChessboardCorners(img, CHECKERBOARD_SIZE, corners, ret)
-        # cv.imshow('img', img)
-        # cv.waitKey(500)
+        cv.imshow('img', img)
+        cv.waitKey(500)
 
         print(len(objpoints), len(imgpoints))
     else:

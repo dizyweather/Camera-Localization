@@ -43,11 +43,12 @@ def main():
     # - Can provide 1 path or 2 paths (with dk)
     # - if path 2 None, export frames for path 1 only
 
-    CAM1_VIDEO  = "./data/videos/left_camera_matte.MP4"  # MP4 path 1
+    CAM1_VIDEO  = "./data/videos/GH010185.MP4"  # MP4 path 1
     CAM2_VIDEO  = None   # MP4 path 2 | "" | None
     DELTA       = 0                    # cam1_frame = cam2_frame + DELTA
+
     CAM1_FRAMES = [
-        frame for frame in range(300, 6600 , 200)    # (Start Frame, End Frame, Number of frames to take)
+        frame for frame in range((0 * 60 + 0) * 60, (0 * 60 + 45) * 60 , 51)    # (Start Frame, End Frame, Number of frames to take)
     ]
     OUTPUT_ROOT = "./Gopro_Narrow"
 
