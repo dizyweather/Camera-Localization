@@ -1,4 +1,2 @@
-/data/videos/*
-/data/calibration_frames/*
-/data/misc
+/data/*
 /nolan_code/*
