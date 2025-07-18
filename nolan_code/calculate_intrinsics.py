@@ -6,10 +6,10 @@ from tqdm import tqdm
 from pupil_apriltags import Detector
 
 ########### EDIT BELOW HERE
-IMG_DIR           = Path("./Gopro_Narrow/cam1_cal")  # image folder path 
+IMG_DIR           = Path("./data/calibration_frames/cam1_cal")  # image folder path 
 EXT               = "JPG"          # PNG, JPG, case insensitive
 SAVE_JSON         = True           # Export intrinsics matrix K
-OUT_FILE          = "./results/cam1_intrinsics.json"    # Output file name
+OUT_FILE          = "./data/results/cam1_intrinsics.json"    # Output file name
 
 # These are already set to the large calibration board we own
 TAG_SIZE_MM       = 49.0           # tag edge (mm)

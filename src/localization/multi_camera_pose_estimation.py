@@ -11,12 +11,25 @@ marker_length = 0.05 # length of aruco marker in meters
 # Absolute path to the current file
 file_path = os.path.dirname(__file__)
 
+CAM1_JSON = file_path + '/../../data/results/cam1_intrinsics.json' # relative path to the camera 1 json file
+CAM2_JSON = None # relative path to the camera 2 json file, can be NONE if not used
+
+CAM1_FRAMES_PATH = file_path + '/../../data/calibration_frames/cam1_cal' # relative path to the camera 1 frames
+CAM2_FRAMES_PATH = "" # relative path to the camera 2 frames, can be NONE
+
 # Getting back the objects:
-with open(file_path + '/../../results/cam1_intrinsics.json') as f:  
-    info = json.load(f)
-    
-print(info)
-exit(0)
+with open(CAM1_JSON) as f:  
+    cam1 = json.load(f)
+
+cam1_dist_coeffs = np.array(cam1['distCoeffs'])
+cam1_matrix = np.array(cam1['K'])
+
+if CAM2_JSON is not None and CAM2_JSON != "":
+    with open(CAM2_JSON) as f:  
+        cam2 = json.load(f)
+
+    cam2_dist_coeffs = np.array(cam2['distortion_coefficients'])
+    cam2_matrix = np.array(cam2['K'])
 
 # defines the aruco marker's object points in the marker's frame
 obj_points = np.array([
@@ -26,24 +39,22 @@ obj_points = np.array([
     [-marker_length / 2.0, -marker_length / 2.0, 0.0],  # bottom-left
 ], dtype=np.float32).reshape(-1, 1, 3)
 
-images = glob.glob(file_path + '/../../data/calibration_frames/*.png')
+cam1_frames = glob.glob(CAM1_FRAMES_PATH + "/*.JPG")  # Get all JPG files in the cam1 frames path
+cam2_frames = glob.glob(CAM2_FRAMES_PATH + "/*.JPG") if bool(CAM2_FRAMES_PATH) else None
+
+images = zip(cam1_frames, cam2_frames) if cam2_frames is not None else zip(cam1_frames)
 
 index  = 0
+
 for image_path in images:
     # Read the image
     image = cv.imread(image_path)
 
-
-    # z = 39.something
-    # y = 23 ish
-    # x = almost nothing
-
-    # 46.6
     if image is None:
         raise FileNotFoundError(f"Image not found at {image_path}")
 
     # set up aruco code params
-    dict = cv.aruco.getPredefinedDictionary(cv.aruco.DICT_6X6_1000)
+    dict = cv.aruco.getPredefinedDictionary(aruco.DICT_APRILTAG_36h11)
 
     detector_params = cv.aruco.DetectorParameters()
     detector_params.markerBorderBits = 1

@@ -50,7 +50,7 @@ def main():
     CAM1_FRAMES = [
         frame for frame in range((0 * 60 + 0) * 60, (0 * 60 + 45) * 60 , 51)    # (Start Frame, End Frame, Number of frames to take)
     ]
-    OUTPUT_ROOT = "./Gopro_Narrow"
+    OUTPUT_ROOT = "./data/calibration_frames"  # Output root folder
 
     # Output folders:
     # <OUTPUT_ROOT>/cam1_cal/
