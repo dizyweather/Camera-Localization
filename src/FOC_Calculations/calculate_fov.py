@@ -1,8 +1,8 @@
 import numpy as np
 
 # input parameters you want to test IN METERS
-distances_apart = [0.5] # From each lens
-distances_away = [1.32 - 0.25,1.32] # From the center line
+distances_apart = [0.25, 0.5, 0.75] # From each lens
+distances_away = [0.25, 0.5, 0.75, 1] # From the center line
 
 # Camera parameters IN DEGREES
 horizontal_fov = 68  

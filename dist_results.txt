@@ -1,0 +1,24 @@
+[0] Distance from camera: 0.26592852808501366
+Pixels per cm at above distance away: [16.2 12. ]
+
+[1] Distance from camera: 0.16289410525541717
+Pixels per cm at above distance away: [16.6 11.8]
+
+[2] Distance from camera: 0.11051045818208603
+Pixels per cm at above distance away: [18.2 11.8]
+
+[3] Distance from camera: 1.682760537059833
+Pixels per cm at above distance away: [15.2 14.8]
+
+[0] Distance from camera: 0.26592852808501366
+Pixels per cm at above distance away: [16.2 12. ]
+
+[1] Distance from camera: 0.16289410525541717
+Pixels per cm at above distance away: [16.6 11.8]
+
+[2] Distance from camera: 0.11051045818208603
+Pixels per cm at above distance away: [18.2 11.8]
+
+[3] Distance from camera: 1.682760537059833
+Pixels per cm at above distance away: [15.2 14.8]
+
