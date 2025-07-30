@@ -10,14 +10,16 @@ import json
 # Absolute path to the current file
 file_path = os.path.dirname(__file__)
 
-# USER DEFINED PARAMTERS
-CAM1_JSON = file_path + '/../../data/results/cam1_intrinsics.json' # relative path to the camera 1 json file
-CAM2_JSON = None # relative path to the camera 2 json file, can be NONE if not used
+##### USER DEFINED PARAMTERS
+CAM1_JSON = file_path + '/../../data/results/small_board_left_gate_intrinsics.json' # relative path to the camera 1 json file
+CAM2_JSON = file_path + '/../../data/results/small_board_right_gate_intrinsics.json' # relative path to the camera 2 json file, can be NONE if not used
 
 CAM1_FRAMES_PATH = file_path + '/../../data/calibration_frames/cam1_cal' # relative path to the camera 1 frames
-CAM2_FRAMES_PATH = "" # relative path to the camera 2 frames, can be NONE
+CAM2_FRAMES_PATH = file_path + '/../../data/calibration_frames/cam2_cal' # relative path to the camera 2 frames, can be NONE
 
 MARKER_LENGTH_METERS = 0.049 # length of april tag marker in meters
+
+#####
 
 # Rip out data from json files
 with open(CAM1_JSON) as f:  
@@ -26,11 +28,11 @@ with open(CAM1_JSON) as f:
 cam1_dist_coeffs = np.array(cam1['distCoeffs'])
 cam1_matrix = np.array(cam1['K'])
 
-if CAM2_JSON is not None and CAM2_JSON != "":
+if CAM2_JSON is not None and CAM2_JSON != "":  
     with open(CAM2_JSON) as f:  
         cam2 = json.load(f)
 
-    cam2_dist_coeffs = np.array(cam2['distortion_coefficients'])
+    cam2_dist_coeffs = np.array(cam2['distCoeffs'])
     cam2_matrix = np.array(cam2['K'])
 
 # defines the aruco marker's object points in the marker's frame
@@ -43,12 +45,20 @@ obj_points = np.array([
 
 # Get all the frames from camera 1 and camera 2 and pair them
 cam1_frames = glob.glob(CAM1_FRAMES_PATH + "/*.JPG")  # Get all JPG files in the cam1 frames path
-cam2_frames = glob.glob(CAM2_FRAMES_PATH + "/*.JPG") if bool(CAM2_FRAMES_PATH) else None
+cam2_frames = glob.glob(CAM2_FRAMES_PATH + "/*.JPG") if bool(CAM2_FRAMES_PATH) and bool(CAM2_JSON) else None
 
 images = zip(cam1_frames, cam2_frames) if cam2_frames is not None else zip(cam1_frames)
 
-index  = 0
+# set up aruco code detector params
+dict = cv.aruco.getPredefinedDictionary(aruco.DICT_APRILTAG_36h11)
 
+detector_params = cv.aruco.DetectorParameters()
+detector_params.markerBorderBits = 1
+
+detector = cv.aruco.ArucoDetector(dict, detectorParams=detector_params)
+
+# Iterate through each image pair
+index  = 0
 for image_path in images:
     
     # Read the image
@@ -58,21 +68,14 @@ for image_path in images:
     cam1_image = cv.imread(cam1_image_path)
     cam2_image = cv.imread(cam2_image_path) if cam2_image_path else None
 
-    # Error checking
+    # Check if valid images were found
     if cam1_image is None:
         raise FileNotFoundError(f"Image not found at {image_path}")
     
     if cam2_image is None and CAM2_JSON is not None:
         raise FileNotFoundError(f"Image not found at {cam2_image_path}")
-
-    # set up aruco code params
-    dict = cv.aruco.getPredefinedDictionary(aruco.DICT_APRILTAG_36h11)
-
-    detector_params = cv.aruco.DetectorParameters()
-    detector_params.markerBorderBits = 1
-
-    detector = cv.aruco.ArucoDetector(dict, detectorParams=detector_params)
     
+    # Detect markers in images
     cam1_results = detector.detectMarkers(cam1_image)
     cam2_results = detector.detectMarkers(cam2_image) if cam2_image is not None else None
 
@@ -98,7 +101,6 @@ for image_path in images:
         for i in range(len(cam1_results[1])):
             cv.drawFrameAxes(cam1_image, cam1_matrix, cam1_dist_coeffs, cam1_rvecs[i], cam1_tvecs[i], MARKER_LENGTH_METERS * 1.5, 2)
 
-        # get number of pixels in the axis in the image
     
     if cam2_results is not None and cam2_results[1] is not None:
         for i in range(cam2_num_markers):
@@ -121,8 +123,9 @@ for image_path in images:
         cv.imshow('detected aruco markers', cam1_image)
     
     cv.waitKey(0)
-
+    
     index += 1
+    print(index)
     continue
     # Convert rvec and tvec to transformation matrix
     R_cam2marker, _ = cv.Rodrigues(cam1_rvecs[i])

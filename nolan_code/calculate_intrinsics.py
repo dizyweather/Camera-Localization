@@ -6,15 +6,19 @@ from tqdm import tqdm
 from pupil_apriltags import Detector
 
 ########### EDIT BELOW HERE
-IMG_DIR           = Path("./data/calibration_frames/cam1_cal")  # image folder path 
+IMG_DIR           = Path("Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\big_calibration_board\\frames\\shed_right_cal")  # image folder path 
 EXT               = "JPG"          # PNG, JPG, case insensitive
 SAVE_JSON         = True           # Export intrinsics matrix K
-OUT_FILE          = "./data/results/cam1_intrinsics.json"    # Output file name
+OUT_FILE          = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\big_calibration_board\\intrinsics\\large_board_shed_right_intrinsics.json"    # Output file name
 
 # These are already set to the large calibration board we own
-TAG_SIZE_MM       = 49.0           # tag edge (mm)
-TAG_SPACING_MM    = 11           # tag gap (mm)
-GRID_ROWS, GRID_COLS = 3, 4
+
+# Nolan's calibration board (large): tagsize = 75mm, tag space = 40mm, 4x5 grid
+# Daniel's calibration board (small): tagsize = 49mm, tag space = 11mm, 3x4 grid
+
+TAG_SIZE_MM       = 75              # tag edge (mm)
+TAG_SPACING_MM    = 40              # tag gap (mm)
+GRID_ROWS, GRID_COLS = 4, 5
 TAG_ID_OFFSET     = 0
 
 N_THREADS         = 20           # For multi-processing

@@ -37,20 +37,22 @@ def extract_frames(
 
     cap.release()
 
-
 def main():
     # USER DEFINED PARAMTERS
     # - Can provide 1 path or 2 paths (with dk)
     # - if path 2 None, export frames for path 1 only
 
-    CAM1_VIDEO  = "./data/videos/GH010185.MP4"  # MP4 path 1
-    CAM2_VIDEO  = None   # MP4 path 2 | "" | None
-    DELTA       = 0                    # cam1_frame = cam2_frame + DELTA
+    CAM1_VIDEO  = "Y:\\Swarm Assembly 2025\\S02\\0722\\gopro_pair_shed\\left_camera\\GH020259.MP4"  # MP4 path 1
+    CAM2_VIDEO  = "Y:\\Swarm Assembly 2025\\S02\\0722\\gopro_pair_shed\\right_camera\\GH020195.MP4"   # MP4 path 2 | "" | None
+    DELTA       = 1                    # cam1_frame = cam2_frame + DELTA
 
     CAM1_FRAMES = [
-        frame for frame in range((0 * 60 + 0) * 60, (0 * 60 + 45) * 60 , 51)    # (Start Frame, End Frame, Number of frames to take)
+        frame for frame in range((1 * 60 + 35) * 60, (2 * 60 + 10) * 60 , 50)    # (Start Frame, End Frame, Number of frames to take)
     ]
-    OUTPUT_ROOT = "./data/calibration_frames"  # Output root folder
+    OUTPUT_ROOT = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\big_calibration_board\\frames"  # Output root folder
+    
+    CAM1_OUTPUT_FOLDER_NAME = "shed_left"
+    CAM2_OUTPUT_FOLDER_NAME = "shed_right"
 
     # Output folders:
     # <OUTPUT_ROOT>/cam1_cal/
@@ -58,20 +60,20 @@ def main():
 
     # END EDIT SECTION
 
-    cam1_dir = os.path.join(OUTPUT_ROOT, "cam1_cal")
+    cam1_dir = os.path.join(OUTPUT_ROOT, CAM1_OUTPUT_FOLDER_NAME)
     ensure_dir(cam1_dir)
 
     print("Extracting cam1 frames")
-    extract_frames(CAM1_VIDEO, CAM1_FRAMES, cam1_dir, "cam1")
+    extract_frames(CAM1_VIDEO, CAM1_FRAMES, cam1_dir, CAM1_OUTPUT_FOLDER_NAME + "_frame")
 
     has_cam2 = bool(CAM2_VIDEO) and os.path.isfile(CAM2_VIDEO)
     if has_cam2:
         CAM2_FRAMES = [f - DELTA for f in CAM1_FRAMES]
-        cam2_dir = os.path.join(OUTPUT_ROOT, "cam2_cal")
+        cam2_dir = os.path.join(OUTPUT_ROOT, CAM2_OUTPUT_FOLDER_NAME)
         ensure_dir(cam2_dir)
 
         print("\nExtracting cam2 frames")
-        extract_frames(CAM2_VIDEO, CAM2_FRAMES, cam2_dir, "cam2")
+        extract_frames(CAM2_VIDEO, CAM2_FRAMES, cam2_dir, CAM2_OUTPUT_FOLDER_NAME + "_frame")
     else:
         print("\nSecond video not provided or unreadable - skipping cam2 extraction")
 
