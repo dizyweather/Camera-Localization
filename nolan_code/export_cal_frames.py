@@ -41,18 +41,22 @@ def main():
     # USER DEFINED PARAMTERS
     # - Can provide 1 path or 2 paths (with dk)
     # - if path 2 None, export frames for path 1 only
+    IMAGE_FOLDER_PATH = "Y:\\Swarm Assembly 2025\\S02\\0728"  # image folder path
+    STEREO_SIDE = "shed"  # "gate" or "shed"
+    BOARD_TYPE = "large"  # "small" or "large"
 
-    CAM1_VIDEO  = "Y:\\Swarm Assembly 2025\\S02\\0722\\gopro_pair_shed\\left_camera\\GH020259.MP4"  # MP4 path 1
-    CAM2_VIDEO  = "Y:\\Swarm Assembly 2025\\S02\\0722\\gopro_pair_shed\\right_camera\\GH020195.MP4"   # MP4 path 2 | "" | None
-    DELTA       = 1                    # cam1_frame = cam2_frame + DELTA
+    # MAKE SURE TO CHANGE VIDEO NUMBER
+    CAM1_VIDEO  = f"{IMAGE_FOLDER_PATH}\\gopro_pair_{STEREO_SIDE}\\left_camera\\GH020262.MP4"  # MP4 path 1 (SHOULD BE LEFT VIDEO)
+    CAM2_VIDEO  = f"{IMAGE_FOLDER_PATH}\\gopro_pair_{STEREO_SIDE}\\right_camera\\GH020199.MP4"   # MP4 path 2 (SHOULD BE RIGHT VIDEO)
+    DELTA       = -9                  # cam1_frame = cam2_frame + DELTA
 
     CAM1_FRAMES = [
-        frame for frame in range((1 * 60 + 35) * 60, (2 * 60 + 10) * 60 , 50)    # (Start Frame, End Frame, Number of frames to take)
+        frame for frame in range((3 * 60 + 20) * 60, (4 * 60 + 55) * 60 , 100)    # (Start Frame, End Frame, Take every Nth frame)
     ]
-    OUTPUT_ROOT = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\big_calibration_board\\frames"  # Output root folder
+    OUTPUT_ROOT = f"{IMAGE_FOLDER_PATH}\\calibration_data\\{BOARD_TYPE}_calibration_board\\frames"  # Output root folder
     
-    CAM1_OUTPUT_FOLDER_NAME = "shed_left"
-    CAM2_OUTPUT_FOLDER_NAME = "shed_right"
+    CAM1_OUTPUT_FOLDER_NAME = f"{STEREO_SIDE}_left"
+    CAM2_OUTPUT_FOLDER_NAME = f"{STEREO_SIDE}_right"
 
     # Output folders:
     # <OUTPUT_ROOT>/cam1_cal/
@@ -82,3 +86,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+

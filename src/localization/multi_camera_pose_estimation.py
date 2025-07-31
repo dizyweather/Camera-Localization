@@ -7,15 +7,13 @@ import glob
 import json
 
 
-# Absolute path to the current file
-file_path = os.path.dirname(__file__)
 
 ##### USER DEFINED PARAMTERS
-CAM1_JSON = file_path + '/../../data/results/small_board_left_gate_intrinsics.json' # relative path to the camera 1 json file
-CAM2_JSON = file_path + '/../../data/results/small_board_right_gate_intrinsics.json' # relative path to the camera 2 json file, can be NONE if not used
+CAM1_JSON = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\small_calibration_board\\intrinsics\\small_board_left_gate_intrinsics.json" # path to the camera 1 json file
+CAM2_JSON = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\small_calibration_board\\intrinsics\\small_board_right_gate_intrinsics.json" # path to the camera 2 json file, can be NONE if not used
 
-CAM1_FRAMES_PATH = file_path + '/../../data/calibration_frames/cam1_cal' # relative path to the camera 1 frames
-CAM2_FRAMES_PATH = file_path + '/../../data/calibration_frames/cam2_cal' # relative path to the camera 2 frames, can be NONE
+CAM1_FRAMES_PATH = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\small_calibration_board\\frames\\gate_left" # path to the camera 1 frames
+CAM2_FRAMES_PATH = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\small_calibration_board\\frames\\gate_right" # path to the camera 2 frames, can be NONE
 
 MARKER_LENGTH_METERS = 0.049 # length of april tag marker in meters
 
@@ -124,33 +122,51 @@ for image_path in images:
     
     cv.waitKey(0)
     
-    index += 1
-    print(index)
-    continue
     # Convert rvec and tvec to transformation matrix
-    R_cam2marker, _ = cv.Rodrigues(cam1_rvecs[i])
-    t_cam2marker = cam1_tvecs[i].reshape(3, 1)
+    R1_cam2marker, _ = cv.Rodrigues(cam1_rvecs[i])
+    t1_cam2marker = cam1_tvecs[i].reshape(3, 1)
 
     # Compose transformation matrix [R|t]
-    T_cam2marker = np.hstack((R_cam2marker, t_cam2marker))  # 3x4 matrix
-    T_cam2marker = np.vstack((T_cam2marker, [0, 0, 0, 1]))   # 4x4 homogeneous
+    T1_cam2marker = np.hstack((R1_cam2marker, t1_cam2marker))  # 3x4 matrix
+    T1_cam2marker = np.vstack((T1_cam2marker, [0, 0, 0, 1]))   # 4x4 homogeneous
 
     # Invert to get T_marker2cam
-    T_marker2cam = np.linalg.inv(T_cam2marker)
+    T1_marker2cam = np.linalg.inv(T1_cam2marker)
 
     # Extract camera position in marker frame
-    camera_position_in_marker = T_marker2cam[:3, 3]
+    camera1_position_in_marker = T1_marker2cam[:3, 3]
     # print(f"Camera position relative to marker in {image_path}: {camera_position_in_marker}")
 
     # Convert rotation matrix to Euler angles (XYZ convention)
-    euler_angles = R.from_matrix(T_marker2cam[:3, :3]).as_euler('xyz', degrees=True)
+    cam1_euler_angles = R.from_matrix(T1_marker2cam[:3, :3]).as_euler('xyz', degrees=True)
     # print("Camera orientation (XYZ Euler angles in degrees):", euler_angles)
 
-    # Save the transformation matrix & rotation using pickle
-    with open('dist_results.txt', 'a+') as f:
-        f.write(f'[{index}] ')
-        f.write('Distance from camera: ' + str(camera_position_in_marker[2]) + '\n')
-        f.write('Pixels per cm at above distance away: ' + str(pixels_in_axis[0] / 5) + '\n\n')
+    # if cam2_image is not None:
+    #     R2_cam2marker, _ = cv.Rodrigues(cam2_rvecs[i])
+    #     t2_cam2marker = cam2_tvecs[i].reshape(3, 1)
+
+    #     T2_cam2marker = np.hstack((R2_cam2marker, t2_cam2marker))
+    #     T2_cam2marker = np.vstack((T2_cam2marker, [0, 0, 0, 1]))
+
+    #     T2_marker2cam = np.linalg.inv(T2_cam2marker)
+
+    #     # Extract camera position in marker frame
+    #     camera2_position_in_marker = T2_marker2cam[:3, 3]
+    #     # print(f"Camera position relative to marker in {image_path}: {camera_position_in_marker}")
+
+    #     # Convert rotation matrix to Euler angles (XYZ convention)
+    #     cam2_euler_angles = R.from_matrix(T2_marker2cam[:3, :3]).as_euler('xyz', degrees=True)
+
+    #     print(np.linalg.norm(camera1_position_in_marker - camera2_position_in_marker))
+    # else:
+    #     print(camera1_position_in_marker)
+    print(camera1_position_in_marker)
     
+    # # Save the transformation matrix & rotation using pickle
+    # with open('dist_results.txt', 'a+') as f:
+    #     f.write(f'[{index}] ')
+    #     f.write('Distance from camera: ' + str(camera_position_in_marker[2]) + '\n')
+    #     f.write('Pixels per cm at above distance away: ' + str(pixels_in_axis[0] / 5) + '\n\n')
+
     
     index += 1

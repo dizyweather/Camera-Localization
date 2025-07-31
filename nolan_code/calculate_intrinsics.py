@@ -1,31 +1,44 @@
+# Nolan's code edited to be used for bee swarm experiment
 from pathlib import Path
 import cv2
 import numpy as np
 import json
 from tqdm import tqdm
 from pupil_apriltags import Detector
+import os
 
 ########### EDIT BELOW HERE
-IMG_DIR           = Path("Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\big_calibration_board\\frames\\shed_right_cal")  # image folder path 
+CALIBRATION_BOARD_TYPE = "large"  # "small" or "large"
+CAMERA_ID = "shed_left"  # "gate_left" or "gate_right", "shed_left" or "shed_right"
+IMAGE_FOLDER_PATH = "Y:\\Swarm Assembly 2025\\S02\\0725"  # image folder path
+
 EXT               = "JPG"          # PNG, JPG, case insensitive
-SAVE_JSON         = True           # Export intrinsics matrix K
-OUT_FILE          = "Y:\\Swarm Assembly 2025\\S02\\0722\\calibration_data\\big_calibration_board\\intrinsics\\large_board_shed_right_intrinsics.json"    # Output file name
-
-# These are already set to the large calibration board we own
-
-# Nolan's calibration board (large): tagsize = 75mm, tag space = 40mm, 4x5 grid
-# Daniel's calibration board (small): tagsize = 49mm, tag space = 11mm, 3x4 grid
-
-TAG_SIZE_MM       = 75              # tag edge (mm)
-TAG_SPACING_MM    = 40              # tag gap (mm)
-GRID_ROWS, GRID_COLS = 4, 5
-TAG_ID_OFFSET     = 0
 
 N_THREADS         = 20           # For multi-processing
 MAX_PROCESSING_WIDTH = 1920 
 SHOW_DETECTIONS   = True
 
 ############# DON'T EDIT BELOW
+
+IMG_DIR           = Path(f"{IMAGE_FOLDER_PATH}\\calibration_data\\{CALIBRATION_BOARD_TYPE}_calibration_board\\frames\\{CAMERA_ID}")  # image folder path 
+SAVE_JSON         = True           # Export intrinsics matrix K
+OUT_FILE          = Path(f"{IMAGE_FOLDER_PATH}\\calibration_data\\{CALIBRATION_BOARD_TYPE}_calibration_board\\intrinsics\\{CALIBRATION_BOARD_TYPE}_board_{CAMERA_ID}_intrinsics.json")    # Output file name
+
+# Nolan's calibration board (large): tagsize = 75mm, tag space = 40mm, 4x5 grid
+# Daniel's calibration board (small): tagsize = 49mm, tag space = 11mm, 3x4 grid
+
+if CALIBRATION_BOARD_TYPE == "large":
+    TAG_SIZE_MM       = 75             # tag edge (mm)
+    TAG_SPACING_MM    = 40              # tag gap (mm)
+    GRID_ROWS, GRID_COLS = 4, 5
+    TAG_ID_OFFSET     = 0
+elif CALIBRATION_BOARD_TYPE == "small":
+    TAG_SIZE_MM       = 49             # tag edge (mm)
+    TAG_SPACING_MM    = 11              # tag gap (mm)
+    GRID_ROWS, GRID_COLS = 3, 4
+    TAG_ID_OFFSET     = 0
+else:
+    raise ValueError("CALIBRATION_BOARD_TYPE must be 'large' or 'small'")
 
 # Detector config
 at = Detector(
@@ -139,6 +152,8 @@ print(f"\nDist coeffs array shape: {dist.shape}")
 print("Dist coeffs (k1,k2,p1,p2,k3,...):\n", dist.ravel())
 
 if SAVE_JSON:
+    #folder name
+    os.makedirs(OUT_FILE.parent, exist_ok=True) ## TEST LATER
     with open(OUT_FILE, "w", encoding="utf-8") as fh:
         json.dump({
             "K": K.tolist(),
