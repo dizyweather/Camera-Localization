@@ -8,15 +8,15 @@ from pupil_apriltags import Detector
 import os
 
 ########### EDIT BELOW HERE
-CALIBRATION_BOARD_TYPE = "large"  # "small" or "large"
-CAMERA_ID = "shed_left"  # "gate_left" or "gate_right", "shed_left" or "shed_right"
-IMAGE_FOLDER_PATH = "Y:\\Swarm Assembly 2025\\S02\\0725"  # image folder path
+CALIBRATION_BOARD_TYPE  = "large"  # "small" or "large"
+CAMERA_ID               = "gate_left"  # "gate_left" or "gate_right", "shed_left" or "shed_right"
+IMAGE_FOLDER_PATH       = "Y:\\Swarm Assembly 2025\\S02\\0728"  # image folder path
 
-EXT               = "JPG"          # PNG, JPG, case insensitive
+EXT                     = "JPG"          # PNG, JPG, case insensitive
 
-N_THREADS         = 20           # For multi-processing
-MAX_PROCESSING_WIDTH = 1920 
-SHOW_DETECTIONS   = True
+N_THREADS               = 20           # For multi-processing
+MAX_PROCESSING_WIDTH    = 1920 
+SHOW_DETECTIONS         = True
 
 ############# DON'T EDIT BELOW
 
@@ -26,7 +26,6 @@ OUT_FILE          = Path(f"{IMAGE_FOLDER_PATH}\\calibration_data\\{CALIBRATION_B
 
 # Nolan's calibration board (large): tagsize = 75mm, tag space = 40mm, 4x5 grid
 # Daniel's calibration board (small): tagsize = 49mm, tag space = 11mm, 3x4 grid
-
 if CALIBRATION_BOARD_TYPE == "large":
     TAG_SIZE_MM       = 75             # tag edge (mm)
     TAG_SPACING_MM    = 40              # tag gap (mm)
@@ -39,6 +38,11 @@ elif CALIBRATION_BOARD_TYPE == "small":
     TAG_ID_OFFSET     = 0
 else:
     raise ValueError("CALIBRATION_BOARD_TYPE must be 'large' or 'small'")
+
+# DISABLE ERRORS IF YOU KNOW WHAT YOU ARE DOING
+if CAMERA_ID not in ["gate_left", "gate_right", "shed_left", "shed_right"]:
+    raise ValueError("CAMERA_ID must be 'gate_left', 'gate_right', 'shed_left', or 'shed_right'" + 
+                     "\nComment out this line if you know what you are doing.")
 
 # Detector config
 at = Detector(

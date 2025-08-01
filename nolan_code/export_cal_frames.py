@@ -1,3 +1,4 @@
+# Nolan's code edited to be used for bee swarm experiment
 import cv2
 import os
 from typing import List
@@ -38,32 +39,41 @@ def extract_frames(
     cap.release()
 
 def main():
-    # USER DEFINED PARAMTERS
+    ########## USER DEFINED PARAMTERS
     # - Can provide 1 path or 2 paths (with dk)
     # - if path 2 None, export frames for path 1 only
-    IMAGE_FOLDER_PATH = "Y:\\Swarm Assembly 2025\\S02\\0728"  # image folder path
-    STEREO_SIDE = "shed"  # "gate" or "shed"
-    BOARD_TYPE = "large"  # "small" or "large"
+    IMAGE_FOLDER_PATH       = "Y:\\Swarm Assembly 2025\\S02\\0728"  # image folder path
+    STEREO_SIDE             = "shed"  # "gate" or "shed"
+    CALIBRATION_BOARD_TYPE  = "large"  # "small" or "large"
 
-    # MAKE SURE TO CHANGE VIDEO NUMBER
+    # MAKE SURE TO CHANGE VIDEO NUMBER {_______.MP4}
     CAM1_VIDEO  = f"{IMAGE_FOLDER_PATH}\\gopro_pair_{STEREO_SIDE}\\left_camera\\GH020262.MP4"  # MP4 path 1 (SHOULD BE LEFT VIDEO)
     CAM2_VIDEO  = f"{IMAGE_FOLDER_PATH}\\gopro_pair_{STEREO_SIDE}\\right_camera\\GH020199.MP4"   # MP4 path 2 (SHOULD BE RIGHT VIDEO)
     DELTA       = -9                  # cam1_frame = cam2_frame + DELTA
 
+    CAM1_START_TIME_SECONDS = 3 * 60 + 20  # Start time of calibration in seconds for cam1
+    CAM1_END_TIME_SECONDS   = 4 * 60 + 55  # End time of calibration in seconds for cam1
+    USE_EVERY_NTH_FRAME = 100  # Take every Nth frame
+
+    ########## END EDIT SECTION
+
     CAM1_FRAMES = [
-        frame for frame in range((3 * 60 + 20) * 60, (4 * 60 + 55) * 60 , 100)    # (Start Frame, End Frame, Take every Nth frame)
+        frame for frame in range(CAM1_START_TIME_SECONDS * 60, CAM1_END_TIME_SECONDS * 60 , USE_EVERY_NTH_FRAME)    # (Start Frame, End Frame, Take every Nth frame)
     ]
-    OUTPUT_ROOT = f"{IMAGE_FOLDER_PATH}\\calibration_data\\{BOARD_TYPE}_calibration_board\\frames"  # Output root folder
-    
+    OUTPUT_ROOT = f"{IMAGE_FOLDER_PATH}\\calibration_data\\{CALIBRATION_BOARD_TYPE}_calibration_board\\frames"  # Output root folder
+
     CAM1_OUTPUT_FOLDER_NAME = f"{STEREO_SIDE}_left"
     CAM2_OUTPUT_FOLDER_NAME = f"{STEREO_SIDE}_right"
 
-    # Output folders:
-    # <OUTPUT_ROOT>/cam1_cal/
-    # <OUTPUT_ROOT>/cam2_cal/   (created only when video 2 is valid)
 
-    # END EDIT SECTION
-
+    # Comment out the following lines if you know what you are doing
+    if CALIBRATION_BOARD_TYPE not in ["large", "small"]:
+        raise ValueError("CALIBRATION_BOARD_TYPE must be 'large' or 'small'")
+    
+    if STEREO_SIDE not in ["gate", "shed"]:
+        raise ValueError("STEREO_SIDE must be 'gate' or 'shed'")
+    
+    
     cam1_dir = os.path.join(OUTPUT_ROOT, CAM1_OUTPUT_FOLDER_NAME)
     ensure_dir(cam1_dir)
 
