@@ -1,19 +1,24 @@
 Purpose of Code:
-    Localize the camera's position from the aruco codes it can see
+    1. To be able to calibrate the gopro camera by downloading frames of calibration board and calculating intrinsics
+	2. To be able to localize camera relative to the other camera in the stereo setup (IN PROGRESS)
 
-How to use:
-In order to achieve this we first must calculate the camera's calibration values to account for distorition
+NOTE: This code HEAVILY relies on the file structure in the entry template!!! Any change to the file structure will have to also be changed in code.
+ 
+Calibration - How to use:
+1. Download Frames
+	- In "export_cal_frames.py"
+	- Change the user-defined parameters
+		- Remember to change the video number at the end of "CAM1_VIDEO"
+		- MANUALLY find the calibration start and end times in cam1
+		- Can get "DELTA" using Henry's Synchroneity MATLAB code
+	- Run code
+	
+	This should download frames into a folder to be used by the next step
 
-1. Setup camera in desired position and capture a video of a checkerboard pattern on that camera
-2. Run frame_downloader.py to collect intermidiete frames from the video to be used as training data. (can add frames manually instead)
-    - Remember to change the video location inside the script
-    - Will save data to data/calibration frames
-3. Run calculate_calibration_values.py
-    - Uses the frames in calibration_frames to calculate the distorition of the camera
-    - Saves data to src/results folder
-4. Run pose_estimation.py 
-    - Estimates the camera's pose relative to the aruco code in the given image path
+2. Calculate Intrinsics
+	- In "calculate_intrinsics.py"
+	- Change the user-defined parameters
+	- Run code
 
-Optional:
-    Run undistort_image.py to undistort a given image using the camera_matrix values calculated
-    Stores results in src/results
+	This should use the above frames and calculate the camera's intrinsics and saves to a json file
+
